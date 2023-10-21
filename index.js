@@ -32,6 +32,11 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Define an endpoint to save scanned QR codes
+
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Homepage" });
+});
+
 app.post("/qrcodes", async (req, res) => {
   console.log(req, "----request body");
   try {
