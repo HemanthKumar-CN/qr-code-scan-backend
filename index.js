@@ -2,7 +2,9 @@ const express = require("express");
 const multer = require("multer");
 const bodyParser = require("body-parser");
 var cors = require("cors");
+const jwt = require("jsonwebtoken");
 const { Sequelize, DataTypes } = require("sequelize");
+const verifyToken = require("./authMiddleware");
 
 const app = express();
 app.use(cors());
@@ -24,6 +26,7 @@ const sequelize = new Sequelize(
 console.log(process.env.DB_USERNAME);
 
 // Define a model for your QR code data
+
 const QRCode = sequelize.define("qr_codes", {
   content: {
     type: DataTypes.STRING,
@@ -33,8 +36,10 @@ const QRCode = sequelize.define("qr_codes", {
   },
   id: {
     type: DataTypes.BIGINT,
+    autoIncrement: true,
     primaryKey: true,
   },
+
   // Add other fields if needed, such as scan_date
 });
 
@@ -50,7 +55,16 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Homepage" });
 });
 
-app.post("/qrcodes", async (req, res) => {
+app.post("/login", (req, res) => {
+  console.log(req, "/login.......");
+  const token = jwt.sign(req.body, "secretKey", {
+    expiresIn: "1h", // Set the token expiration time
+  });
+
+  res.status(200).json({ token });
+});
+
+app.post("/qrcodes", verifyToken, async (req, res) => {
   console.log(req, "----request body");
   try {
     const content = req.body.content;
@@ -72,7 +86,8 @@ app.post("/qrcodes", async (req, res) => {
 });
 
 // Define an endpoint to retrieve a list of scanned QR codes
-app.get("/qrcodes", async (req, res) => {
+app.get("/qrcodes", verifyToken, async (req, res) => {
+  // console.log(req.headers.authorization, "----Headers");
   try {
     // Retrieve all QRCode entries from the database
     const qrCodes = await QRCode.findAll();
@@ -84,9 +99,9 @@ app.get("/qrcodes", async (req, res) => {
   }
 });
 
-app.delete("/qrcodes/:id", async (req, res) => {
+app.delete("/qrcodes/:id", verifyToken, async (req, res) => {
   const qrCodeId = req.params.id;
-  console.log(qrCodeId, typeof qrCodeId, "))))))))))))))))))");
+  // console.log(qrCodeId, typeof qrCodeId, "))))))))))))))))))");
   try {
     const qrCodeDelete = await QRCode.destroy({
       where: {
