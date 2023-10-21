@@ -38,39 +38,39 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Homepage" });
 });
 
-// app.post("/qrcodes", async (req, res) => {
-//   console.log(req, "----request body");
-//   try {
-//     const content = req.body.content;
-//     const thumbnail = req.body.thumbnail;
+app.post("/qrcodes", async (req, res) => {
+  console.log(req, "----request body");
+  try {
+    const content = req.body.content;
+    const thumbnail = req.body.thumbnail;
 
-//     // Create a new QRCode entry in the database
-//     const qrCode = await QRCode.create({
-//       content: content,
-//       thumbnail: thumbnail,
-//     });
+    // Create a new QRCode entry in the database
+    const qrCode = await QRCode.create({
+      content: content,
+      thumbnail: thumbnail,
+    });
 
-//     console.log(qrCode, "---qrCode uploaded");
+    console.log(qrCode, "---qrCode uploaded");
 
-//     res.status(201).json({ message: "QR code saved successfully" });
-//   } catch (error) {
-//     console.error("Error saving QR code:", error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
+    res.status(201).json({ message: "QR code saved successfully" });
+  } catch (error) {
+    console.error("Error saving QR code:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
-// // Define an endpoint to retrieve a list of scanned QR codes
-// app.get("/qrcodes", async (req, res) => {
-//   try {
-//     // Retrieve all QRCode entries from the database
-//     const qrCodes = await QRCode.findAll();
-//     console.log(qrCodes, "----------------");
-//     res.status(200).json(qrCodes);
-//   } catch (error) {
-//     console.error("Error retrieving QR codes:", error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
+// Define an endpoint to retrieve a list of scanned QR codes
+app.get("/qrcodes", async (req, res) => {
+  try {
+    // Retrieve all QRCode entries from the database
+    const qrCodes = await QRCode.findAll();
+    console.log(qrCodes, "----------------");
+    res.status(200).json(qrCodes);
+  } catch (error) {
+    console.error("Error retrieving QR codes:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 // Sync the database and start the server
 sequelize
