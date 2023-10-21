@@ -23,6 +23,10 @@ const QRCode = sequelize.define("qr_codes", {
   thumbnail: {
     type: DataTypes.STRING,
   },
+  id: {
+    type: DataTypes.BIGINT,
+    primaryKey: true,
+  },
   // Add other fields if needed, such as scan_date
 });
 
@@ -68,6 +72,24 @@ app.get("/qrcodes", async (req, res) => {
     res.status(200).json(qrCodes);
   } catch (error) {
     console.error("Error retrieving QR codes:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.delete("/qrcodes/:id", async (req, res) => {
+  const qrCodeId = req.params.id;
+  console.log(qrCodeId, typeof qrCodeId, "))))))))))))))))))");
+  try {
+    const qrCodeDelete = await QRCode.destroy({
+      where: {
+        id: qrCodeId,
+      },
+    });
+    console.log(qrCodeDelete, "delete request");
+
+    res.status(200).json({ message: "Database deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting the database:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
