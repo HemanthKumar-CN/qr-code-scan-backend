@@ -12,6 +12,7 @@ const port = process.env.PORT || 3000;
 const sequelize = new Sequelize("sql12654553", "sql12654553", "rwy2We2izy", {
   host: "sql12.freesqldatabase.com",
   dialect: "mysql",
+  dialectModule: require("mysql2"),
 });
 
 // Define a model for your QR code data
