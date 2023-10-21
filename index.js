@@ -6,14 +6,22 @@ const { Sequelize, DataTypes } = require("sequelize");
 
 const app = express();
 app.use(cors());
+require("dotenv").config();
 const port = process.env.PORT || 3000;
 
 // Create a Sequelize instance
-const sequelize = new Sequelize("sql12654553", "sql12654553", "rwy2We2izy", {
-  host: "sql12.freesqldatabase.com",
-  dialect: "mysql",
-  dialectModule: require("mysql2"),
-});
+const sequelize = new Sequelize(
+  process.env.DATABASE,
+  process.env.DB_USERNAME,
+  process.env.PASSWORD,
+  {
+    host: process.env.DATABASE_HOST,
+    dialect: "mysql",
+    dialectModule: require("mysql2"),
+  },
+);
+
+console.log(process.env.DB_USERNAME);
 
 // Define a model for your QR code data
 const QRCode = sequelize.define("qr_codes", {
